@@ -19,7 +19,7 @@ app.get('/info', (req, res) => {
         "componente": "server",
         "descrição": "serve os clientes com os serviços x, y e z",
         "versao": "0.1",
-        "ponto_de_acesso": "https://meu-app-sd.heroku.com",
+        "ponto_de_acesso": "https://sd-mgs.herokuapp.com/",
         "status": "up",
         "identificacao": 2,
         "lider": 0,
@@ -30,11 +30,6 @@ app.get('/info', (req, res) => {
 });
 
 app.post('/recurso', (req, res) => {
-
-    let { timeBusy } = req.body;
-
-    timeBusy = (timeBusy == null || timeBusy == undefined) ? 10000 : timeBusy;
-
     if(ocupado) { res.status(409).json({ 'isOcupado': ocupado }); return; }
 
     ocupado = true;
@@ -50,7 +45,7 @@ app.post('/eleicao', (req, res) => {
 
     eleicaoAndamento = true;
 
-    res.status(200);
+    res.status(200).json();
 });
 
 app.post('/eleicao/coordenador', (req, res) => {
@@ -59,7 +54,7 @@ app.post('/eleicao/coordenador', (req, res) => {
     idCordenador = idCord;
     idEleicao = idElei;
 
-    res.status(200);
+    res.status(200).json()
 });
 
 app.get('/recurso', (req, res)=> {
