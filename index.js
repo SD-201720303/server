@@ -30,13 +30,14 @@ app.get('/info', (req, res) => {
 });
 
 app.post('/recurso', (req, res) => {
+
     if(ocupado) { res.status(409).json({ 'isOcupado': ocupado }); return; }
 
     ocupado = true;
 
     res.json({ 'isOcupado': ocupado });
 
-    setTimeout(() => ocupado = false, timeBusy);
+    setTimeout(() => ocupado = false, 10000);
 });
 
 
