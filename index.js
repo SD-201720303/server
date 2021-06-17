@@ -58,8 +58,8 @@ app.get('/info', (req, res) => {
 app.post('/info', (req, res) => {
     res.json({
         "componente": "server",
-        "descrição": "serve os clientes com os serviços x, y e z",
         "versao": "0.1",
+        "descrição": "serve os clientes com os serviços x, y e z",
         "ponto_de_acesso": "https://sd-mgs.herokuapp.com/",
         "status": "up",
         "identificacao": 2,
