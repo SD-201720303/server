@@ -4,17 +4,58 @@ if (process.env.NODE_ENV !== "production")
 
 //const PORT = 3001;
 const HOST = '0.0.0.0';
+const cors = require('cors');
+
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-let servidores = [];
-let ocupado = false;
-let tipoEleicao = "valentao";
-let eleicaoAndamento = false;
-let idCordenador = 0;
-let idEleicao = 0;
+var servidores = [];
+var ocupado = false;
+var tipoEleicao = "valentao";
+var eleicaoAndamento = false;
+var idCordenador = 0;
+var idEleicao = 0;
+
+var coordenador = { 
+    "coordenador": 2,
+    "id_eleicao": "o id da eleição"
+  }
 
 app.get('/info', (req, res) => {
+    res.json({
+        "componente": "server",
+        "versao": "0.1",
+        "descrição": "serve os clientes com os serviços x, y e z",
+        "ponto_de_acesso": "https://sd-mgs.herokuapp.com/",
+        "status": "up",
+        "identificacao": 2,
+        "lider": 0,
+        "eleicao": "valentao",
+        "servidores_conhecidos": [
+        {
+            id: 1,
+            url: "https://sd-jhqs.herokuapp.com"
+        },
+        {
+            id: 2,
+            url: "https://sd-rdm.herokuapp.com"
+        },
+      
+        {
+            id: 3,
+            url: "https://sd-dmss.herokuapp.com"
+        },
+        {
+            id: 4,
+            url: "https://sd-201620236.herokuapp.com"
+        },
+    ]
+    });
+});
+
+app.post('/info', (req, res) => {
     res.json({
         "componente": "server",
         "descrição": "serve os clientes com os serviços x, y e z",
@@ -23,9 +64,26 @@ app.get('/info', (req, res) => {
         "status": "up",
         "identificacao": 2,
         "lider": 0,
-        "eleicao": tipoEleicao,
-        "eleicao_em_andamento": eleicaoAndamento,
-        "servidores_conhecidos": servidores
+        "eleicao": "valentao",
+        "servidores_conhecidos": [
+        {
+            id: 1,
+            url: "https://sd-jhqs.herokuapp.com"
+        },
+        {
+            id: 2,
+            url: "https://sd-rdm.herokuapp.com"
+        },
+      
+        {
+            id: 3,
+            url: "https://sd-dmss.herokuapp.com"
+        },
+        {
+            id: 4,
+            url: "https://sd-201620236.herokuapp.com"
+        },
+    ]
     });
 });
 
@@ -35,14 +93,14 @@ app.post('/recurso', (req, res) => {
 
     ocupado = true;
 
-    res.json({ 'isOcupado': ocupado });
+    res.json({ 'ocupado': ocupado });
 
     setTimeout(() => ocupado = false, 10000);
 });
 
 
 app.post('/eleicao', (req, res) => {
-    let { id } = req.body;
+   var { id } = req.body;
 
     eleicaoAndamento = true;
 
@@ -50,20 +108,21 @@ app.post('/eleicao', (req, res) => {
 });
 
 app.post('/eleicao/coordenador', (req, res) => {
-    let { idCord, idElei } = req.body;
+    coordenador.coordenador = req.body.coordenador;
+    coordenador.id_eleicao = req.body.id_eleicao;
 
-    idCordenador = idCord;
-    idEleicao = idElei;
-
-    res.status(200).json()
+    res.json({ 
+    "coordenador": 2,
+    "id_eleicao": "o id da eleição"
+  })
 });
 
 app.get('/recurso', (req, res)=> {
-    res.json({ 'isOcupado': ocupado });
+    res.json({ 'ocupado': ocupado });
 });
 
 app.get('/eleicao', (req, res)=> {
-    res.json({ 'tipo_eleicao_ativa': tipoEleicao, 'eleicao_em_andamento': eleicaoAndamento });
+    res.json({ 'tipo_de_eleicao_ativa': tipoEleicao, 'eleicao_em_andamento': eleicaoAndamento });
 });
 
 
