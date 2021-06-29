@@ -16,7 +16,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-import * as myEleicao from './src/myEleicao.js';
+import * as startEleicao from './src/startEleicao.js';
 
 
 //var servidores = [];
