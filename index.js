@@ -119,8 +119,6 @@ app.get('/recurso', (req, res)=> {
     res.json({ 'ocupado': ocupado });
 });
 
-app.get('/eleicao', (req, res)=> {
-    res.json({ 'tipo_de_eleicao_ativa': tipoEleicao, 'eleicao_em_andamento': eleicaoAndamento });
-});
+app.get('/eleicao', (req, res) => res.json(eleicao))
 
 app.listen(parseInt(process.env.PORT), HOST);
