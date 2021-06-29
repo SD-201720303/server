@@ -59,7 +59,7 @@ var info = {"componente": "server",
 ]
 }
 var coordenador = { 
-    "coordenador": 5,
+    "coordenador": 2,
     "id_eleicao": "o id da eleição"
   }
 
