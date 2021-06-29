@@ -98,7 +98,7 @@ app.post('/eleicao', (req, res) => {
 
     if (eleicao.eleicao_em_andamento === false) {
         eleicao.eleicao_em_andamento = true;
-        myEleicao.runEleicao(id, info, coordenador);
+        startEleicao.runEleicao(id, info, coordenador);
     }
 
     eleicao.eleicao_em_andamento = false;

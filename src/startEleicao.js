@@ -16,6 +16,7 @@ async function runValentao(id, info, coord) {
             
             if (data.identificacao > info.identificacao) {
                 hasCompetition.push(true) 
+                
                 axios.post(`${server.url}/eleicao`, { id }).catch(err => console.error(err.message));
             } else {
                 hasCompetition.push(false)
