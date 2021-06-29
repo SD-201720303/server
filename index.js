@@ -31,7 +31,7 @@ var info = {"componente": "server",
 "descrição": "serve os clientes com os serviços x, y e z",
 "ponto_de_acesso": "https://sd-mgs.herokuapp.com/",
 "status": "up",
-"identificacao": 10,
+"identificacao": 2,
 "lider": false,
 "eleicao": "valentao",
 "servidores_conhecidos": [
