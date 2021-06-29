@@ -1,35 +1,43 @@
-const express = require('express');
-if (process.env.NODE_ENV !== "production")
-    require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+if (process.env.NODE_ENV !== "production") {
+
+    dotenv.config();
+}
 
 //const PORT = 3001;
 const HOST = '0.0.0.0';
-const cors = require('cors');
+
 
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-var servidores = [];
+import * as myEleicao from './src/myEleicao.js';
+
+
+//var servidores = [];
 var ocupado = false;
-var tipoEleicao = "valentao";
-var eleicaoAndamento = false;
-var idCordenador = 0;
-var idEleicao = 0;
+//var tipoEleicao = "valentao";
+//var eleicaoAndamento = false;
+//var idCordenador = 0;
+//var idEleicao = 0;
 
 var info = {"componente": "server",
 "versao": "0.1",
 "descrição": "serve os clientes com os serviços x, y e z",
 "ponto_de_acesso": "https://sd-mgs.herokuapp.com/",
 "status": "up",
-"identificacao": 2,
-"lider": 0,
+"identificacao": 10,
+"lider": false,
 "eleicao": "valentao",
 "servidores_conhecidos": [
 {
     id: 1,
-    url: "https://sd-jhqs.herokuapp.com"
+    url: "https://sd-jhqs.herokuapp.com",
 },
 {
     id: 2,
@@ -44,11 +52,14 @@ var info = {"componente": "server",
     id: 4,
     url: "https://sd-201620236.herokuapp.com"
 },
+{
+    id: 5,
+    url: "https://sd-app-server-jesulino.herokuapp.com"
+},
 ]
 }
-
 var coordenador = { 
-    "coordenador": 2,
+    "coordenador": 5,
     "id_eleicao": "o id da eleição"
   }
 
@@ -82,13 +93,17 @@ app.post('/recurso', (req, res) => {
 });
 
 
-app.post('/eleicao', (req, resp) => {
-    eleicao.id = req.body.id
-    eleicao.ativo = true
-    setTimeout(() => eleicao.ativo = false, 10000)
-    resp.send({"Eleicao": eleicao})
-  })
-  
+app.post('/eleicao', (req, res) => {
+    const {id} = req.body;
+
+    if (eleicao.eleicao_em_andamento === false) {
+        eleicao.eleicao_em_andamento = true;
+        myEleicao.runEleicao(id, info, coordenador);
+    }
+
+    eleicao.eleicao_em_andamento = false;
+    res.status(200).json(coordenador);
+})
 
 app.post('/eleicao/coordenador', (req, res) => {
     coordenador.coordenador = req.body.coordenador;
