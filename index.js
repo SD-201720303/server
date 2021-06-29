@@ -26,37 +26,37 @@ var ocupado = false;
 //var idCordenador = 0;
 //var idEleicao = 0;
 
-var info = {"componente": "server",
-"versao": "0.1",
-"descrição": "serve os clientes com os serviços x, y e z",
-"ponto_de_acesso": "https://sd-mgs.herokuapp.com/",
-"status": "up",
-"identificacao": 1,
-"lider": false,
-"eleicao": "valentao",
-"servidores_conhecidos": [
-{
-    id: 1,
-    url: "https://sd-jhqs.herokuapp.com",
-},
-{
-    id: 2,
-    url: "https://sd-rdm.herokuapp.com"
-},
-
-{
-    id: 3,
-    url: "https://sd-dmss.herokuapp.com"
-},
-{
-    id: 4,
-    url: "https://sd-201620236.herokuapp.com"
-},
-{
-    id: 5,
-    url: "https://sd-app-server-jesulino.herokuapp.com"
-},
-]
+var info = {
+    componente: "server",
+    versao: "0.1",
+    descricao: "serve os clientes com os serviços x, y, z",
+    ponto_de_acesso: "https://sd-mgs.herokuapp.com",
+    status: "up",
+    identificacao: 6,
+    lider: false,
+    eleicao: "valentao",
+    servidores_conhecidos: [
+        {
+            id: 1,
+            url: "https://sd-rdm.herokuapp.com"
+        },
+        {
+            id: 2,
+            url: "https://sd-201620236.herokuapp.com"
+        },
+        {
+            id: 3,
+            url: "https://sd-jhsq.herokuapp.com"
+        },
+        {
+            id: 4,
+            url: "https://sd-dmss.herokuapp.com"
+        },
+        {
+            id: 5,
+            url: "https://sd-app-server-jesulino.herokuapp.com"
+        }
+    ]
 }
 var coordenador = { 
     "coordenador": 2,

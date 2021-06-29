@@ -15,7 +15,7 @@ async function runValentao(id, info, coord) {
              const { data } = await axios(`${server.url}/info`).catch(err => console.log(`Erro! ${err.message}`));
             
             if (data.identificacao > info.identificacao) {
-                hasCompetition.push(true) 
+                hasCompetition.push(true)
                 
                 axios.post(`${server.url}/eleicao`, { id }).catch(err => console.error(err.message));
             } else {
