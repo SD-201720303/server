@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-if (process.env.NODE_ENV !== "production") {
 
+if (process.env.NODE_ENV !== "production") {
     dotenv.config();
 }
 
@@ -13,6 +13,7 @@ const HOST = '0.0.0.0';
 
 
 const app = express();
+app.use(express.urlencoded({ extended: true}))
 app.use(cors());
 app.use(express.json());
 
@@ -26,7 +27,7 @@ var ocupado = false;
 //var idCordenador = 0;
 //var idEleicao = 0;
 
-var info = {
+let info = {
     componente: "server",
     versao: "0.1",
     descricao: "serve os clientes com os serviços x, y, z",
@@ -78,8 +79,9 @@ app.post('/info', (req, resp) => {
     info.identificacao = req.body.identificacao ?? info.identificacao
     info.lider = req.body.lider ?? info.lider
     info.eleicao = req.body.eleicao || info.eleicao
+    eleicao.tipo_de_eleicao_ativa = info.eleicao 
     resp.send(info)
-  })
+})
 
 app.post('/recurso', (req, res) => {
 
@@ -100,8 +102,6 @@ app.post('/eleicao', (req, res) => {
         eleicao.eleicao_em_andamento = true;
         startEleicao.runEleicao(id, info, coordenador);
     }
-
-    eleicao.eleicao_em_andamento = false;
     res.status(200).json(coordenador);
 })
 
@@ -119,6 +119,8 @@ app.get('/recurso', (req, res)=> {
     res.json({ 'ocupado': ocupado });
 });
 
-app.get('/eleicao', (req, res) => res.json(eleicao))
+app.get('/eleicao', (req, res) => {res.json(eleicao)
+})
+
 
 app.listen(parseInt(process.env.PORT), HOST);

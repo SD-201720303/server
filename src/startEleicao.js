@@ -4,7 +4,10 @@ export function runEleicao(id, info, coord) {
 
     if (info.eleicao === "valentao") {
         runValentao(id, info, coord);
-    }
+    } 
+     else if (info.eleicao === "anel") {
+    runValentao(id, info, coord);
+     }
 }
 
 async function runValentao(id, info, coord) {
