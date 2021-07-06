@@ -5,7 +5,7 @@ export function goEleicao(id, info, coord, eleicao) {
     if (info.eleicao === "valentao") {
         goValentao(id, info, coord);
     } else if (info.eleicao === "anel") {
-        this.goAnel(id, info, coord, eleicao);
+        goAnel(id, info, coord, eleicao);
      }
 }
 
@@ -34,7 +34,7 @@ async function goValentao(id, info, coord) {
     if(!hasCompetition)
        handleCoordenador(id, info, coord);
     else
-      this.undefinedCoordenador(id, info, coord, idMaximo);
+      undefinedCoordenador(id, info, coord, idMaximo);
 }
 
 async function goAnel (id, info, coord, eleicao) {
@@ -46,9 +46,9 @@ async function goAnel (id, info, coord, eleicao) {
         const idMaximo = Math.max(...ids);
 
         if (idMaximo === info.identificacao)
-            this.handleCoordenador(id, info, coord);
+            handleCoordenador(id, info, coord);
         else {
-            this.undefinedCoordenador(id, info, coord, idMaximo);
+            undefinedCoordenador(id, info, coord, idMaximo);
 
             for (const server of info.servidores_conhecidos) {
                 axios.post(`${server.url}/eleicao/coordenador`, {
@@ -114,4 +114,9 @@ export function handleCoordenador(id, info, coord) {
             id_eleicao: id
         }).catch(err => console.error(err.message));
     })
+}
+export function undefinedCoordenador (id, info, coord, idMaximo) {
+    info.lider = false;
+    coord.coordenador = idMaximo;
+    coord.id_eleicao = id;
 }
