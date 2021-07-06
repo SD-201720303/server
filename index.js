@@ -99,9 +99,6 @@ app.post('/eleicao', (req, res) => {
     if (eleicao.eleicao_em_andamento === false) {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
-    } else {
-        console.error("Eleicao negada")
-        res.status(409).json(eleicao);
     }
 
     res.status(200).json(coordenador);
