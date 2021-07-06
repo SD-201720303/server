@@ -34,7 +34,7 @@ async function goValentao(id, info, coord) {
     if(!hasCompetition)
        handleCoordenador(id, info, coord);
     else
-      undefinedCoordenador(id, info, coord, idMaximo);
+      unsetCoordenador(id, info, coord, idMaximo);
 }
 
 async function goAnel (id, info, coord, eleicao) {
@@ -48,7 +48,7 @@ async function goAnel (id, info, coord, eleicao) {
         if (idMaximo === info.identificacao)
             handleCoordenador(id, info, coord);
         else {
-            undefinedCoordenador(id, info, coord, idMaximo);
+            unsetCoordenador(id, info, coord, idMaximo);
 
             for (const server of info.servidores_conhecidos) {
                 axios.post(`${server.url}/eleicao/coordenador`, {
@@ -97,20 +97,20 @@ async function goAnel (id, info, coord, eleicao) {
     }
 }
 
-export function undefinedCoordenador (id, info, coord, idMaximo) {
-    info.lider = false;
-    coord.coordenador = idMaximo;
-    coord.id_eleicao = id;
-}
 
 export function handleCoordenador(id, info, coord) {
     info.lider = true;
     coord.coordenador = info.identificacao;
     coord.id_eleicao = id;
-
     
+    info.servidores_conhecidos.forEach(server => {
+        axios.post(`${server.url}/eleicao/coordenador`, {
+            coordenador: info.identificacao,
+            id_eleicao: id
+        }).catch(err => console.error(err.message));
+    })
 }
-export function undefinedCoordenador (id, info, coord, idMaximo) {
+export function unsetCoordenador (id, info, coord, idMaximo) {
     info.lider = false;
     coord.coordenador = idMaximo;
     coord.id_eleicao = id;
