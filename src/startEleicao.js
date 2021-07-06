@@ -46,9 +46,9 @@ async function goAnel (id, info, coord, eleicao) {
         const idMaximo = Math.max(...ids);
 
         if (idMaximo === info.identificacao)
-            handleCoordenador(id, info, coord);
+            this.handleCoordenador(id, info, coord);
         else {
-            undefinedCoordenador(id, info, coord, idMaximo);
+            this.undefinedCoordenador(id, info, coord, idMaximo);
 
             for (const server of info.servidores_conhecidos) {
                 axios.post(`${server.url}/eleicao/coordenador`, {
