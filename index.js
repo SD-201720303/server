@@ -25,7 +25,7 @@ var ocupado = false;
 //var idCordenador = 0;
 //var idEleicao = 0;
 
-let info = {
+var info = {
     componente: "server",
     versao: "0.1",
     descricao: "serve os clientes com os serviços x, y, z",
@@ -96,8 +96,7 @@ app.post('/recurso', (req, res) => {
 app.post('/eleicao', (req, res) => {
     const {id} = req.body;
 
-    if (eleicao.eleicao_em_andamento === false 
-        || info.eleicao === anel) {
+    if (eleicao.eleicao_em_andamento === false  || info.eleicao === anel) {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
     } else {
@@ -105,10 +104,6 @@ app.post('/eleicao', (req, res) => {
         res.status(409).json(eleicao);
     }
 
-    if(info.lider)
-        eleicao.eleicao_em_andamento = false;
-
-    res.status(200).json(myCoordenador);
     res.status(200).json(coordenador);
 })
 
