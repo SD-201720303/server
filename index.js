@@ -99,9 +99,6 @@ app.post('/eleicao', (req, res) => {
     if (eleicao.eleicao_em_andamento === false) {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
-    } else {
-        console.error("eleicao negada")
-        res.status(409).json(eleicao);
     }
     if(info.lider)
     eleicao.eleicao_em_andamento = false;
@@ -113,15 +110,13 @@ app.post('/eleicao/coordenador', (req, res) => {
     coordenador.coordenador = req.body.coordenador;
     coordenador.id_eleicao = req.body.id_eleicao
     eleicao.eleicao_em_andamento = false;
+
     if(req.body.coordenador === info.identificacao)
         info.lider = true;
     else
         info.lider = false;
 
-    res.json({ 
-    "coordenador": 2,
-    "id_eleicao": "o id da eleição"
-  })
+    res.json(coordenador)
 });
 
 app.get('/recurso', (req, res)=> {
@@ -130,6 +125,7 @@ app.get('/recurso', (req, res)=> {
 
 app.get('/eleicao', (req, res) => {res.json(eleicao)
 })
+
 
 
 app.listen(parseInt(process.env.PORT), HOST);
