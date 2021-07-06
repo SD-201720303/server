@@ -107,13 +107,8 @@ export function handleCoordenador(id, info, coord) {
     info.lider = true;
     coord.coordenador = info.identificacao;
     coord.id_eleicao = id;
+
     
-    info.servidores_conhecidos.forEach(server => {
-        axios.post(`${server.url}/eleicao/coordenador`, {
-            coordenador: info.identificacao,
-            id_eleicao: id
-        }).catch(err => console.error(err.message));
-    })
 }
 export function undefinedCoordenador (id, info, coord, idMaximo) {
     info.lider = false;
