@@ -33,7 +33,7 @@ var info = {
     status: "up",
     identificacao: 9,
     lider: false,
-    eleicao: "anel",
+    eleicao: "valentao",
     servidores_conhecidos: [
         {
             id: 1,
@@ -96,7 +96,7 @@ app.post('/recurso', (req, res) => {
 app.post('/eleicao', (req, res) => {
     const {id} = req.body;
 
-    if (eleicao.eleicao_em_andamento === false  || info.eleicao === anel) {
+    if (eleicao.eleicao_em_andamento === false) {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
     } else {
