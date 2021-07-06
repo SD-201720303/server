@@ -33,7 +33,7 @@ var info = {
     status: "up",
     identificacao: 9,
     lider: false,
-    eleicao: "valentao",
+    eleicao: "anel",
     servidores_conhecidos: [
         {
             id: 1,
