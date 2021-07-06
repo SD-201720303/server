@@ -10,8 +10,6 @@ if (process.env.NODE_ENV !== "production") {
 //const PORT = 3001;
 const HOST = '0.0.0.0';
 
-
-
 const app = express();
 app.use(express.urlencoded({ extended: true}))
 app.use(cors());
@@ -98,16 +96,22 @@ app.post('/recurso', (req, res) => {
 app.post('/eleicao', (req, res) => {
     const {id} = req.body;
 
-    if (eleicao.eleicao_em_andamento === false) {
+    if (eleicao.eleicao_em_andamento === false 
+        || info.eleicao === anel) {
         eleicao.eleicao_em_andamento = true;
-        startEleicao.runEleicao(id, info, coordenador);
+        startEleicao.goEleicao(id, info, coordenador);
     }
     res.status(200).json(coordenador);
 })
 
 app.post('/eleicao/coordenador', (req, res) => {
     coordenador.coordenador = req.body.coordenador;
-    coordenador.id_eleicao = req.body.id_eleicao;
+    coordenador.id_eleicao = req.body.id_eleicao
+    eleicao.eleicao_em_andamento = false;
+    if(req.body.coordenador === info.identificacao)
+        info.lider = true;
+    else
+        info.lider = false;
 
     res.json({ 
     "coordenador": 2,
