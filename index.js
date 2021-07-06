@@ -31,7 +31,7 @@ let info = {
     descricao: "serve os clientes com os serviços x, y, z",
     ponto_de_acesso: "https://sd-mgs.herokuapp.com",
     status: "up",
-    identificacao: 6,
+    identificacao: 9,
     lider: false,
     eleicao: "valentao",
     servidores_conhecidos: [
@@ -59,7 +59,7 @@ let info = {
 }
 var coordenador = { 
     "coordenador": 2,
-    "id_eleicao": "o id da eleição"
+    "id_eleicao": ""
   }
 
 var eleicao = {
@@ -99,8 +99,16 @@ app.post('/eleicao', (req, res) => {
     if (eleicao.eleicao_em_andamento === false 
         || info.eleicao === anel) {
         eleicao.eleicao_em_andamento = true;
-        startEleicao.goEleicao(id, info, coordenador);
+        startEleicao.goEleicao(id, info, coordenador, eleicao);
+    } else {
+        console.error("Eleicao negada")
+        res.status(409).json(eleicao);
     }
+
+    if(info.lider)
+        eleicao.eleicao_em_andamento = false;
+
+    res.status(200).json(myCoordenador);
     res.status(200).json(coordenador);
 })
 
