@@ -39,10 +39,10 @@ var info = {
             id: 1,
             url: "https://sd-rdm.herokuapp.com"
         },
-        {
-            id: 2,
-            url: "https://sd-201620236.herokuapp.com"
-        },
+        // {
+        //     id: 2,
+        //     url: "https://sd-201620236.herokuapp.com"
+        // },
         {
             id: 3,
             url: "https://sd-jhsq.herokuapp.com"
@@ -59,7 +59,7 @@ var info = {
 }
 var coordenador = { 
     "coordenador": 2,
-    "id_eleicao": ""
+    "id_eleicao": "o id da eleição"
   }
 
 var eleicao = {
@@ -100,15 +100,13 @@ app.post('/eleicao', (req, res) => {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
     }
-    if(info.lider)
-    eleicao.eleicao_em_andamento = false;
 
     res.status(200).json(coordenador);
 })
 
 app.post('/eleicao/coordenador', (req, res) => {
     coordenador.coordenador = req.body.coordenador;
-    coordenador.id_eleicao = req.body.id_eleicao
+    coordenador.id_eleicao = req.body.id_eleicao;
     eleicao.eleicao_em_andamento = false;
 
     if(req.body.coordenador === info.identificacao)
@@ -126,6 +124,11 @@ app.get('/recurso', (req, res)=> {
 app.get('/eleicao', (req, res) => {res.json(eleicao)
 })
 
-
+app.get('/eleicao/reset', (req, res)=> {
+    coordenador.coordenador = 0; 
+    coordenador.id_eleicao = "";
+    eleicao.eleicao_em_andamento = false;
+    res.json({ 'ocupado': ocupado });
+});
 
 app.listen(parseInt(process.env.PORT), HOST);
