@@ -39,10 +39,10 @@ var info = {
             id: 1,
             url: "https://sd-rdm.herokuapp.com"
         },
-        // {
-        //     id: 2,
-        //     url: "https://sd-201620236.herokuapp.com"
-        // },
+        {
+            id: 2,
+            url: "https://sd-201620236.herokuapp.com"
+        },
         {
             id: 3,
             url: "https://sd-jhsq.herokuapp.com"
@@ -76,7 +76,8 @@ app.post('/info', (req, resp) => {
     info.status = req.body.status || info.status
     info.identificacao = req.body.identificacao ?? info.identificacao
     info.lider = req.body.lider ?? info.lider
-    info.eleicao = req.body.eleicao || info.eleicao
+    info.eleicao = req.body.eleicao || info.eleicao 
+    req.body.eleicao === "valentao" || req.body.eleicao === "anel"
     eleicao.tipo_de_eleicao_ativa = info.eleicao 
     resp.send(info)
 })
@@ -96,7 +97,7 @@ app.post('/recurso', (req, res) => {
 app.post('/eleicao', (req, res) => {
     const {id} = req.body;
 
-    if (eleicao.eleicao_em_andamento === false) {
+    if (eleicao.eleicao_em_andamento === false || info.eleicao === "anel") {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
     }

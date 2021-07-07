@@ -4,9 +4,9 @@ export function goEleicao(id, info, coord, eleicao) {
 
     if (info.eleicao === "valentao") {
         goValentao(id, info, coord);
-    } //else if (info.eleicao === "anel") {
-       // goAnel(id, info, coord, eleicao);
-     //}
+    } else if (info.eleicao === "anel") {
+        goAnel(id, info, coord, eleicao);
+     }
 }
 
 async function goValentao(id, info, coord) {
