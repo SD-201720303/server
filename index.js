@@ -31,7 +31,7 @@ var info = {
     descricao: "serve os clientes com os serviços x, y, z",
     ponto_de_acesso: "https://sd-mgs.herokuapp.com",
     status: "up",
-    identificacao: 9,
+    identificacao: 1,
     lider: false,
     eleicao: "valentao",
     servidores_conhecidos: [
