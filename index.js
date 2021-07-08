@@ -62,7 +62,7 @@ var coordenador = {
     "id_eleicao": "o id da eleição"
   }
 
-var eleicao = {
+var eleicao = {  
     "tipo_de_eleicao_ativa": info.eleicao,
     "eleicao_em_andamento": false
 }
@@ -124,6 +124,10 @@ app.get('/recurso', (req, res)=> {
 
 app.get('/eleicao', (req, res) => {res.json(eleicao)
 })
+
+app.get('/eleicao/coordenador', (req, resp) => {
+    resp.send(coordenador)
+});
 
 app.get('/eleicao/reset', (req, res)=> {
     coordenador.coordenador = 0; 
