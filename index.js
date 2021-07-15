@@ -86,16 +86,15 @@ app.get('/info', (req, resp) => {
 });
 
 app.post('/recurso', (req, res) => {
-    //const leaderIsBusy = false
 
     if (!ocupado && info.lider) {
         ocupado = true
         res.json({ ocupado })
         setTimeout(() => ocupado = false, 20000)
     } else if (!ocupado && !info.lider) {
-        const leaderIsBusy = (info.servidores_conhecidos);
+        const liderOcupado = (info.servidores_conhecidos);
 
-        if (leaderIsBusy) {
+        if (liderOcupado) {
             ocupado = true
             res.status(409).json({ ocupado })
             setTimeout(() => ocupado = false, 20000)
@@ -138,12 +137,12 @@ app.get('/recurso', (req, res) => {
     if (info.lider)
         res.json({ ocupado, id_lider: info.identificacao })
     else {
-        const leaderId = (info.servidores_conhecidos);
+        const idLider = (info.servidores_conhecidos);
 
         if (ocupado)
-            res.status(409).json({ ocupado, id_lider: leaderId })
+            res.status(409).json({ ocupado, id_lider: idLider })
         else
-            res.json({ ocupado, id_lider: leaderId })
+            res.json({ ocupado, id_lider: idLider })
     }
 })
 
