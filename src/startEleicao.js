@@ -17,7 +17,7 @@ async function goValentao(id, info, coord) {
         try {
              const { data } = await axios(`${server.url}/info`).catch(err => console.log(`Erro! ${err.message}`));
             
-            if (data.identificacao > info.identificacao) {
+            if (data.identificacao > info.identificacao && data.status === "up") {
                 hasCompetition.push(true)
                 if (data.identificacao > idMaximo)
                         idMaximo = data.identificacao;
@@ -66,7 +66,7 @@ async function goAnel (id, info, coord, eleicao) {
         let servers = [];
         for (const server of info.servidores_conhecidos) {
             const { data } = await axios(`${server.url}/info`)
-                .catch(err => console.log(`Connection error! ${err.message}`));
+                .catch(err => console.log(`Erro! ${err.message}`));
 
             if (data.status === "up" && data.eleicao === "anel")
                 servers.push({

@@ -16,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 import * as startEleicao from './src/startEleicao.js';
+//import * as recurso from './src/recurso.js';
 
 
 //var servidores = [];
@@ -39,10 +40,10 @@ var info = {
             id: 1,
             url: "https://sd-rdm.herokuapp.com"
         },
-        {
-            id: 2,
-            url: "https://sd-201620236.herokuapp.com"
-        },
+        // {
+        //     id: 2,
+        //     url: "https://sd-201620236.herokuapp.com"
+        // },
         {
             id: 3,
             url: "https://sd-jhsq.herokuapp.com"
@@ -68,9 +69,6 @@ var eleicao = {
 }
 
 
-app.get('/info', (req, resp) => {
-    resp.send(info)
-});
 
 app.post('/info', (req, resp) => {
     info.status = req.body.status || info.status
@@ -79,19 +77,38 @@ app.post('/info', (req, resp) => {
     info.eleicao = req.body.eleicao || info.eleicao 
     req.body.eleicao === "valentao" || req.body.eleicao === "anel"
     eleicao.tipo_de_eleicao_ativa = info.eleicao 
+
     resp.send(info)
 })
 
-app.post('/recurso', (req, res) => {
-
-    if(ocupado) { res.status(409).json({ 'ocupado': ocupado }); return; }
-
-    ocupado = true;
-
-    res.json({ 'ocupado': ocupado });
-
-    setTimeout(() => ocupado = false, 10000);
+app.get('/info', (req, resp) => {
+    resp.send(info)
 });
+
+app.post('/recurso', (req, res) => {
+    //const leaderIsBusy = false
+
+    if (!ocupado && info.lider) {
+        ocupado = true
+        res.json({ ocupado })
+        setTimeout(() => ocupado = false, 20000)
+    } else if (!ocupado && !info.lider) {
+        const leaderIsBusy = (info.servidores_conhecidos);
+
+        if (leaderIsBusy) {
+            ocupado = true
+            res.status(409).json({ ocupado })
+            setTimeout(() => ocupado = false, 20000)
+        }
+        else {
+            ocupado = true
+            res.json({ ocupado })
+            setTimeout(() => ocupado = false, 20000)
+        }
+    } else if (ocupado) {
+        res.status(409).json({ ocupado })
+    }
+})
 
 
 app.post('/eleicao', (req, res) => {
@@ -111,16 +128,24 @@ app.post('/eleicao/coordenador', (req, res) => {
     eleicao.eleicao_em_andamento = false;
 
     if(req.body.coordenador === info.identificacao)
-        info.lider = true;
-    else
-        info.lider = false;
+        info.lider = true; else  info.lider = false;
 
     res.json(coordenador)
 });
 
-app.get('/recurso', (req, res)=> {
-    res.json({ 'ocupado': ocupado });
-});
+app.get('/recurso', (req, res) => {
+
+    if (info.lider)
+        res.json({ ocupado, id_lider: info.identificacao })
+    else {
+        const leaderId = (info.servidores_conhecidos);
+
+        if (ocupado)
+            res.status(409).json({ ocupado, id_lider: leaderId })
+        else
+            res.json({ ocupado, id_lider: leaderId })
+    }
+})
 
 app.get('/eleicao', (req, res) => {res.json(eleicao)
 })
@@ -129,11 +154,7 @@ app.get('/eleicao/coordenador', (req, resp) => {
     resp.send(coordenador)
 });
 
-app.get('/eleicao/reset', (req, res)=> {
-    coordenador.coordenador = 0; 
-    coordenador.id_eleicao = "";
-    eleicao.eleicao_em_andamento = false;
-    res.json({ 'ocupado': ocupado });
-});
+
+
 
 app.listen(parseInt(process.env.PORT), HOST);
