@@ -36,7 +36,16 @@ async function goValentao(id, info, coord) {
     else
        unsetCoordenador(id, info, coord, idMaximo);
 }
-
+async function pegarDadosProcessados(url) {
+    let v;
+    try {
+      v = await baixarDados(url);
+    } catch(e) {
+      v = await baixarDadosReservas(url);
+    }
+    return processarDadosNoWorker(v);
+  }
+  
 async function goAnel (id, info, coord, eleicao) {
     var ids = id.split("-");
     ids.shift();

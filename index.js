@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-
 if (process.env.NODE_ENV !== "production") {
     dotenv.config();
 }
@@ -16,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 import * as startEleicao from './src/startEleicao.js';
-//import * as recurso from './src/recurso.js';
+//const recurso = require ('./src/recurso.js');
 
 
 //var servidores = [];
@@ -60,7 +59,7 @@ var info = {
 }
 var coordenador = { 
     "coordenador": 2,
-    "id_eleicao": "o id da eleição"
+    "id_eleicao": ""
   }
 
 var eleicao = {  
@@ -76,6 +75,7 @@ app.post('/info', (req, resp) => {
     info.lider = req.body.lider ?? info.lider
     info.eleicao = req.body.eleicao || info.eleicao 
     req.body.eleicao === "valentao" || req.body.eleicao === "anel"
+    req.body.status === "up" || req.body.status === "down"
     eleicao.tipo_de_eleicao_ativa = info.eleicao 
 
     resp.send(info)
@@ -85,18 +85,17 @@ app.get('/info', (req, resp) => {
     resp.send(info)
 });
 
-app.post('/recurso', (req, res) => {
-
+app.post('/recurso', async (req, res) => {
     if (!ocupado && info.lider) {
         ocupado = true
         res.json({ ocupado })
         setTimeout(() => ocupado = false, 20000)
     } else if (!ocupado && !info.lider) {
-        const liderOcupado = (info.servidores_conhecidos);
+        const leaderIsBusy = (info.servidores_conhecidos);
 
-        if (liderOcupado) {
+        if (leaderIsBusy) {
             ocupado = true
-            res.status(409).json({ ocupado })
+            res.status(200).json({ ocupado })
             setTimeout(() => ocupado = false, 20000)
         }
         else {
@@ -109,14 +108,16 @@ app.post('/recurso', (req, res) => {
     }
 })
 
-
 app.post('/eleicao', (req, res) => {
-    const {id} = req.body;
+    const { id } = req.body;
 
     if (eleicao.eleicao_em_andamento === false || info.eleicao === "anel") {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
     }
+
+    if (info.lider)
+        eleicao.eleicao_em_andamento = false;
 
     res.status(200).json(coordenador);
 })
@@ -127,24 +128,26 @@ app.post('/eleicao/coordenador', (req, res) => {
     eleicao.eleicao_em_andamento = false;
 
     if(req.body.coordenador === info.identificacao)
-        info.lider = true; else  info.lider = false;
+        info.lider = true; 
+        else  
+        info.lider = false;
 
     res.json(coordenador)
 });
 
-app.get('/recurso', (req, res) => {
-
+app.get('/recurso', async (req, res) => {
     if (info.lider)
         res.json({ ocupado, id_lider: info.identificacao })
     else {
-        const idLider = (info.servidores_conhecidos);
+        const leaderId = (info.servidores_conhecidos);
 
         if (ocupado)
-            res.status(409).json({ ocupado, id_lider: idLider })
+            res.status(409).json({ ocupado, id_lider: leaderId })
         else
-            res.json({ ocupado, id_lider: idLider })
+            res.json({ ocupado, id_lider: leaderId })
     }
 })
+
 
 app.get('/eleicao', (req, res) => {res.json(eleicao)
 })
