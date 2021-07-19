@@ -1,3 +1,3 @@
 build:
   docker:
-    sd-mgs: Dockerfile
+    sd-mgs: Dockerfile 

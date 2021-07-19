@@ -6,7 +6,6 @@ if (process.env.NODE_ENV !== "production") {
     dotenv.config();
 }
 
-//const PORT = 3001;
 const HOST = '0.0.0.0';
 
 const app = express();
@@ -15,7 +14,6 @@ app.use(cors());
 app.use(express.json());
 
 import * as startEleicao from './src/startEleicao.js';
-//const recurso = require ('./src/recurso.js');
 
 
 //var servidores = [];
@@ -83,38 +81,16 @@ app.get('/info', (req, resp) => {
     resp.send(info)
 });
 
-app.post('/recurso', (req, res) => {
-    if (!ocupado && info.lider) {
-        ocupado = true
-        res.json({ ocupado })
-        setTimeout(() => ocupado = false, 20000)
-    } else if (!ocupado && !info.lider) {
-        const liderOcupado = (info.servidores_conhecidos);
-
-        if (liderOcupado) {
-            ocupado = true
-            res.status(200).json({ ocupado })
-            setTimeout(() => ocupado = false, 20000)
-        } else {
-            ocupado = true
-            res.json({ ocupado })
-            setTimeout(() => ocupado = false, 20000)
-        }
-    } else if (ocupado) 
-        res.status(409).json({ ocupado })
-    
-})
 
 app.post('/eleicao', (req, res) => {
     const { id } = req.body;
 
-    if (eleicao.eleicao_em_andamento === false || info.eleicao === "anel") {
+    if (eleicao.eleicao_em_andamento === false) {
         eleicao.eleicao_em_andamento = true;
         startEleicao.goEleicao(id, info, coordenador, eleicao);
     }
-
-    if (info.lider)
-        eleicao.eleicao_em_andamento = false;
+   if (info.lider)
+   eleicao.eleicao_em_andamento = false;
 
     res.status(200).json(coordenador);
 })
@@ -130,17 +106,33 @@ app.post('/eleicao/coordenador', (req, res) => {
     res.json(coordenador)
 });
 
-app.get('/recurso', async (req, res) => {
+app.post('/recurso', (req, res) => {
+    if (!ocupado && info.lider) {
+        ocupado = true
+        res.json({ ocupado })
+        setTimeout(() => ocupado = false, 20000)
+    } else if (!ocupado && !info.lider) {
+        const indisponivel = (info.servidores_conhecidos);
+
+        if (indisponivel) {
+        ocupado = true
+        res.status(200).json({ ocupado })
+        setTimeout(() => ocupado = false, 20000)
+        }
+    } else if (ocupado) 
+        res.status(409).json({ ocupado })
+    
+})
+app.get('/recurso',(req, res) => {
     if (info.lider) {
-        res.json({ ocupado, id_lider: info.identificacao })
+    res.json({ ocupado, id_lider: info.identificacao })
     }
     else {
-        const idLider = (info.servidores_conhecidos);
-
-        if (ocupado)
-            res.status(409).json({ ocupado, id_lider: idLider })
-        else
-            res.json({ ocupado, id_lider: idLider })
+    const idLider = (info.servidores_conhecidos);
+    if (ocupado)
+    res.status(409).json({ ocupado, id_lider: idLider })
+    else
+    res.json({ ocupado, id_lider: idLider })
     }
 })
 

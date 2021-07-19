@@ -9,4 +9,4 @@ COPY . .
 
 ENTRYPOINT [ "docker-express" ]
 
-CMD ["$PORT"]
+CMD ["$PORT"] 

@@ -2,15 +2,15 @@ import axios from 'axios';
 
 export function goEleicao(id, info, coord, eleicao) {
 
-    if (info.eleicao === "valentao") {
+    if (info.eleicao === "valentao") 
         goValentao(id, info, coord);
-    } else if (info.eleicao === "anel") {
+    else if (info.eleicao === "anel") 
         goAnel(id, info, coord, eleicao);
-     }
+     
 }
 
 async function goValentao(id, info, coord) {
-    var hasCompetition = [];
+    var competicao = [];
     var idMaximo = 0;
 
     for(const server of info.servidores_conhecidos) {
@@ -18,20 +18,20 @@ async function goValentao(id, info, coord) {
              const { data } = await axios(`${server.url}/info`).catch(err => console.log(`Erro! ${err.message}`));
             
             if (data.identificacao > info.identificacao && data.status === "up") {
-                hasCompetition.push(true)
+                competicao.push(true)
                 if (data.identificacao > idMaximo)
                         idMaximo = data.identificacao;
                 
                 axios.post(`${server.url}/eleicao`, { id }).catch(err => console.error(err.message));
             } else {
-                hasCompetition.push(false)
+                competicao.push(false)
             }
         } catch (err) {
             console.error(err.message);
         }
     }
 
-    if(!hasCompetition)
+    if(!competicao)
        handleCoordenador(id, info, coord);
     else
        indefCoordenador(id, info, coord, idMaximo);
@@ -42,7 +42,6 @@ async function goAnel(id, info, coord, eleicao) {
     let servers = [];
     for (const server of info.servidores_conhecidos) {
         const { data } = await axios(`${server.url}/info`)
-            .catch(err => console.log(`Connection error! ${err.message}`));
 
         if (data.status === "up" && data.eleicao === "anel")
             servers.push({
@@ -50,8 +49,7 @@ async function goAnel(id, info, coord, eleicao) {
                 url: server.url
             })
     }
-
-    if (ids[0] === info.identificacao) {
+        if (ids[0] === info.identificacao) {
         const maxId = Math.max(...ids);
 
         if (maxId === info.identificacao)
@@ -67,29 +65,8 @@ async function goAnel(id, info, coord, eleicao) {
 
             eleicao.eleicao_em_andamento = false;
         }
-    } else {
-        if (!ids.some(elem => elem === info.identificacao))
-            id = id.concat(`-${info.identificacao}`);
-
-        const serverIds = servers.map(server => server.identificacao);
-
-        if (Math.max(info.identificacao, ...serverIds) === info.identificacao) {
-            const minId = Math.min(...serverIds);
-            const selecionaServidor = servers.filter(server => {
-                if (server.identificacao === minId)
-                    return server;
-            });
-            axios.post(`${selecionaServidor[0].url}/eleicao`, { id }).catch(err => console.error(err.message));
-        }
-        else {
-            const selecionaServidor = servers.find(server => server.identificacao > info.identificacao);
-            axios.post(`${selecionaServidor.url}/eleicao`, { id }).catch(err => console.error(err.message));
-        }
-
-    }
+    } 
 }
-
-
 export function handleCoordenador(id, info, coord) {
     info.lider = true;
     coord.coordenador = info.identificacao;
