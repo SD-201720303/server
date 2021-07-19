@@ -59,15 +59,13 @@ var info = {
 }
 var coordenador = { 
     "coordenador": 2,
-    "id_eleicao": ""
+    "id_eleicao": "o id da eleição"
   }
 
 var eleicao = {  
     "tipo_de_eleicao_ativa": info.eleicao,
     "eleicao_em_andamento": false
 }
-
-
 
 app.post('/info', (req, resp) => {
     info.status = req.body.status || info.status
@@ -85,27 +83,26 @@ app.get('/info', (req, resp) => {
     resp.send(info)
 });
 
-app.post('/recurso', async (req, res) => {
+app.post('/recurso', (req, res) => {
     if (!ocupado && info.lider) {
         ocupado = true
         res.json({ ocupado })
         setTimeout(() => ocupado = false, 20000)
     } else if (!ocupado && !info.lider) {
-        const leaderIsBusy = (info.servidores_conhecidos);
+        const liderOcupado = (info.servidores_conhecidos);
 
-        if (leaderIsBusy) {
+        if (liderOcupado) {
             ocupado = true
             res.status(200).json({ ocupado })
             setTimeout(() => ocupado = false, 20000)
-        }
-        else {
+        } else {
             ocupado = true
             res.json({ ocupado })
             setTimeout(() => ocupado = false, 20000)
         }
-    } else if (ocupado) {
+    } else if (ocupado) 
         res.status(409).json({ ocupado })
-    }
+    
 })
 
 app.post('/eleicao', (req, res) => {
@@ -128,26 +125,24 @@ app.post('/eleicao/coordenador', (req, res) => {
     eleicao.eleicao_em_andamento = false;
 
     if(req.body.coordenador === info.identificacao)
-        info.lider = true; 
-        else  
-        info.lider = false;
+        info.lider = true; else   info.lider = false;
 
     res.json(coordenador)
 });
 
 app.get('/recurso', async (req, res) => {
-    if (info.lider)
+    if (info.lider) {
         res.json({ ocupado, id_lider: info.identificacao })
+    }
     else {
-        const leaderId = (info.servidores_conhecidos);
+        const idLider = (info.servidores_conhecidos);
 
         if (ocupado)
-            res.status(409).json({ ocupado, id_lider: leaderId })
+            res.status(409).json({ ocupado, id_lider: idLider })
         else
-            res.json({ ocupado, id_lider: leaderId })
+            res.json({ ocupado, id_lider: idLider })
     }
 })
-
 
 app.get('/eleicao', (req, res) => {res.json(eleicao)
 })
@@ -155,8 +150,5 @@ app.get('/eleicao', (req, res) => {res.json(eleicao)
 app.get('/eleicao/coordenador', (req, resp) => {
     resp.send(coordenador)
 });
-
-
-
 
 app.listen(parseInt(process.env.PORT), HOST);

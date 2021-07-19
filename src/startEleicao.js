@@ -34,36 +34,35 @@ async function goValentao(id, info, coord) {
     if(!hasCompetition)
        handleCoordenador(id, info, coord);
     else
-       unsetCoordenador(id, info, coord, idMaximo);
+       indefCoordenador(id, info, coord, idMaximo);
 }
-async function pegarDadosProcessados(url) {
-    let v;
-    try {
-      v = await baixarDados(url);
-    } catch(e) {
-      v = await baixarDadosReservas(url);
-    }
-    return processarDadosNoWorker(v);
-  }
   
-async function goAnel (id, info, coord, eleicao) {
-    var ids = id.split("-");
-    ids.shift();
-    ids = ids.map(filteredId => parseInt(filteredId));
+async function goAnel(id, info, coord, eleicao) {
+    let ids 
+    let servers = [];
+    for (const server of info.servidores_conhecidos) {
+        const { data } = await axios(`${server.url}/info`)
+            .catch(err => console.log(`Connection error! ${err.message}`));
+
+        if (data.status === "up" && data.eleicao === "anel")
+            servers.push({
+                identificacao: data.identificacao,
+                url: server.url
+            })
+    }
 
     if (ids[0] === info.identificacao) {
-        const idMaximo = Math.max(...ids);
+        const maxId = Math.max(...ids);
 
-        if (idMaximo === info.identificacao)
-            handleCoordenador(id, info, coord);
-        else {
-            unsetCoordenador(id, info, coord, idMaximo);
+        if (maxId === info.identificacao)
+            handleCoordenador(id, info, coord, servers); else {
+            indefCoordenador(id, info, coord, maxId);
 
-            for (const server of info.servidores_conhecidos) {
+            for (const server of servers) {
                 axios.post(`${server.url}/eleicao/coordenador`, {
-                    coordenador: idMaximo,
+                    coordenador: maxId,
                     id_eleicao: id
-                }).catch(err => console.error(err.message));
+                })
             }
 
             eleicao.eleicao_em_andamento = false;
@@ -72,35 +71,19 @@ async function goAnel (id, info, coord, eleicao) {
         if (!ids.some(elem => elem === info.identificacao))
             id = id.concat(`-${info.identificacao}`);
 
-        let servers = [];
-        for (const server of info.servidores_conhecidos) {
-            const { data } = await axios(`${server.url}/info`)
-                .catch(err => console.log(`Erro! ${err.message}`));
-
-            if (data.status === "up" && data.eleicao === "anel")
-                servers.push({
-                    identificacao: data.identificacao,
-                    url: server.url
-                })
-        }
-
         const serverIds = servers.map(server => server.identificacao);
 
         if (Math.max(info.identificacao, ...serverIds) === info.identificacao) {
             const minId = Math.min(...serverIds);
-            const selectedServer = servers.filter(server => {
+            const selecionaServidor = servers.filter(server => {
                 if (server.identificacao === minId)
                     return server;
             });
-            axios.post(`${selectedServer[0].url}/eleicao`, { id }).catch(err => console.error(err.message));
+            axios.post(`${selecionaServidor[0].url}/eleicao`, { id }).catch(err => console.error(err.message));
         }
         else {
-            const idMaximo = Math.max(info.identificacao, ...serverIds);
-            const selectedServer = servers.filter(server => {
-                if (server.identificacao === idMaximo)
-                    return server;
-            });
-            axios.post(`${selectedServer[0].url}/eleicao`, { id }).catch(err => console.error(err.message));
+            const selecionaServidor = servers.find(server => server.identificacao > info.identificacao);
+            axios.post(`${selecionaServidor.url}/eleicao`, { id }).catch(err => console.error(err.message));
         }
 
     }
@@ -119,7 +102,7 @@ export function handleCoordenador(id, info, coord) {
         }).catch(err => console.error(err.message));
     })
 }
-export function unsetCoordenador (id, info, coord, idMaximo) {
+export function indefCoordenador (id, info, coord, idMaximo) {
     info.lider = false;
     coord.coordenador = idMaximo;
     coord.id_eleicao = id;
