@@ -37,36 +37,6 @@ async function goValentao(id, info, coord) {
        indefCoordenador(id, info, coord, idMaximo);
 }
   
-async function goAnel(id, info, coord, eleicao) {
-    let ids 
-    let servers = [];
-    for (const server of info.servidores_conhecidos) {
-        const { data } = await axios(`${server.url}/info`)
-
-        if (data.status === "up" && data.eleicao === "anel")
-            servers.push({
-                identificacao: data.identificacao,
-                url: server.url
-            })
-    }
-        if (ids[0] === info.identificacao) {
-        const maxId = Math.max(...ids);
-
-        if (maxId === info.identificacao)
-            handleCoordenador(id, info, coord, servers); else {
-            indefCoordenador(id, info, coord, maxId);
-
-            for (const server of servers) {
-                axios.post(`${server.url}/eleicao/coordenador`, {
-                    coordenador: maxId,
-                    id_eleicao: id
-                })
-            }
-
-            eleicao.eleicao_em_andamento = false;
-        }
-    } 
-}
 export function handleCoordenador(id, info, coord) {
     info.lider = true;
     coord.coordenador = info.identificacao;
